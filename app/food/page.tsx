@@ -13,13 +13,21 @@ import { fetcher, sendJson } from "@/lib/fetcher";
 import { usePeople } from "@/lib/people";
 import type { FoodCategory, FoodItem } from "@/types";
 
-const EMPTY_STATE_IMAGE: Record<
-  FoodCategory,
-  { src: string; width: number; height: number }
-> = {
-  night_market: { src: "/assets/cropped/11 (2).png", width: 93, height: 72 },
-  restaurant: { src: "/assets/cropped/11 (5).png", width: 80, height: 72 },
-  souvenir: { src: "/assets/cropped/11 (9).png", width: 68, height: 72 },
+type BannerImage = { src: string; width: number; height: number };
+
+const BANNER_IMAGES: Record<FoodCategory, BannerImage[]> = {
+  night_market: [
+    { src: "/assets/cropped/11 (4).png", width: 95, height: 72 },
+  ],
+  restaurant: [
+    { src: "/assets/cropped/11 (5).png", width: 80, height: 72 },
+    { src: "/assets/cropped/11 (6).png", width: 87, height: 72 },
+  ],
+  souvenir: [
+    { src: "/assets/cropped/11 (7).png", width: 66, height: 72 },
+    { src: "/assets/cropped/11 (8).png", width: 62, height: 72 },
+    { src: "/assets/cropped/11 (9).png", width: 68, height: 72 },
+  ],
 };
 
 export default function FoodPage() {
@@ -49,20 +57,20 @@ export default function FoodPage() {
     await mutate("/api/food");
   }
 
-  const emptyImage = EMPTY_STATE_IMAGE[category];
+  const bannerImages = BANNER_IMAGES[category];
 
   return (
     <div className="pb-6">
-      <div className="relative mx-5 mt-4 flex items-center justify-center rounded-2xl bg-paper-soft py-3">
-        <Image src="/assets/cropped/11 (6).png" alt="" width={106} height={88} />
-        <Image
-          src="/assets/cropped/11 (3).png"
-          alt=""
-          aria-hidden
-          width={52}
-          height={48}
-          className="pointer-events-none absolute -right-1 -top-2 -rotate-6"
-        />
+      <div className="mx-5 mt-4 flex items-center justify-center gap-3 rounded-2xl bg-paper-soft py-3">
+        {bannerImages.map((img) => (
+          <Image
+            key={img.src}
+            src={img.src}
+            alt=""
+            width={img.width}
+            height={img.height}
+          />
+        ))}
       </div>
       <CategoryChips category={category} onChange={setCategory} />
 
@@ -71,10 +79,10 @@ export default function FoodPage() {
       ) : catItems.length === 0 ? (
         <div className="flex flex-col items-center px-5 py-8 text-center">
           <Image
-            src={emptyImage.src}
+            src="/assets/cropped/11 (2).png"
             alt=""
-            width={emptyImage.width}
-            height={emptyImage.height}
+            width={93}
+            height={72}
             className="opacity-70"
           />
           <p className="mt-2 text-sm text-ink-soft">
