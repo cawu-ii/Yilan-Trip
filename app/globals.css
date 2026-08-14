@@ -1,0 +1,78 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@600;700&family=Noto+Sans+TC:wght@400;500;700&family=DM+Mono:wght@500&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Noto Serif TC", serif;
+  --font-sans: "Noto Sans TC", system-ui, sans-serif;
+  --font-mono: "DM Mono", ui-monospace, monospace;
+
+  /* 米白 paper (冰牛奶白) + 深灰棕 ink (黑巧棕) — ref: 薄荷黑巧 color card */
+  --color-paper: #f5f1e7;
+  --color-paper-soft: #f3e6d0;
+  --color-paper-line: #ccc5bd;
+  --color-ink: #3c2a25;
+  --color-ink-soft: #8f847d;
+
+  /* 薄荷綠 brand accent (not tied to any one person) — deepened for contrast */
+  --color-accent: #678b7e;
+  --color-accent-dark: #40564e;
+  --color-accent-soft: #e2f3ed;
+
+  /* 文文 — 芒果黃 mango yellow */
+  --color-wenwen: #fcf0d1;
+  --color-wenwen-solid: #f3c85c;
+  --color-wenwen-ink: #8d7435;
+
+  /* 亞軒 — 珊瑚橙 coral orange */
+  --color-yaxuan: #f9dacc;
+  --color-yaxuan-solid: #e97c4a;
+  --color-yaxuan-ink: #87482b;
+
+  /* 莊家 — 海島藍 island blue */
+  --color-zhuangjia: #d1e4f2;
+  --color-zhuangjia-solid: #5b9ecf;
+  --color-zhuangjia-ink: #355c78;
+
+  /* CA — 棕櫚綠 palm green */
+  --color-qiao: #d9dfd1;
+  --color-qiao-solid: #768c5b;
+  --color-qiao-ink: #445135;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  background-image: radial-gradient(
+    var(--color-paper-line) 1px,
+    transparent 1px
+  );
+  background-size: 18px 18px;
+}
+
+/* Ticket-stub card motif, echoing the real bus ticket photo shared for
+   this trip: a dashed colored spine on the left + a dashed inner divider,
+   instead of cut-out notches (which wouldn't blend with the dotted page
+   background). */
+.ticket-stub {
+  border-left-width: 3px;
+  border-left-style: dashed;
+}
+
+.ticket-divider {
+  border-top: 1.5px dashed var(--color-paper-line);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .tap-scale {
+    transition: transform 0.12s ease;
+  }
+  .tap-scale:active {
+    transform: scale(0.97);
+  }
+}
