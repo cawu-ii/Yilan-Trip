@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Plus } from "lucide-react";
 import useSWR from "swr";
 import { ExpenseSummary } from "@/components/expenses/ExpenseSummary";
+import { MySettlement } from "@/components/expenses/MySettlement";
 import { ExpenseList } from "@/components/expenses/ExpenseList";
 import { ExpenseForm } from "@/components/expenses/ExpenseForm";
 import { Button } from "@/components/ui/Button";
@@ -23,6 +24,7 @@ export default function ExpensesPage() {
   return (
     <div className="pb-6">
       <ExpenseSummary />
+      <MySettlement expenses={expenses ?? []} />
 
       {isLoading ? (
         <p className="px-5 py-10 text-center text-sm text-ink-soft">載入中…</p>
