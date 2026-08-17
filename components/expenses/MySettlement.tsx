@@ -1,20 +1,40 @@
 "use client";
 
+import { Check } from "lucide-react";
+import useSWR, { useSWRConfig } from "swr";
 import { useIdentityContext } from "@/components/layout/IdentityProvider";
 import { colorClasses } from "@/lib/colors";
-import { computeSettlements } from "@/lib/split";
+import { fetcher, sendJson } from "@/lib/fetcher";
+import { computeSettlements, type Settlement } from "@/lib/split";
 import { personById, usePeople } from "@/lib/people";
-import type { Expense } from "@/types";
+import type { Expense, SettlementPayment } from "@/types";
 
 export function MySettlement({ expenses }: { expenses: Expense[] }) {
   const { identity } = useIdentityContext();
   const people = usePeople();
+  const { mutate } = useSWRConfig();
+  const { data: payments } = useSWR<SettlementPayment[]>(
+    "/api/settlements",
+    fetcher,
+    { refreshInterval: 45000 }
+  );
 
   if (!identity) return null;
 
-  const mine = computeSettlements(expenses).filter(
+  const mine = computeSettlements(expenses, payments ?? []).filter(
     (s) => s.fromPersonId === identity.personId || s.toPersonId === identity.personId
   );
+
+  async function markSettled(s: Settlement) {
+    if (!confirm(`確定要標記這筆 NT$${s.amount.toLocaleString()} 已還款嗎？`)) return;
+    await sendJson("/api/settlements", "POST", {
+      fromPersonId: s.fromPersonId,
+      toPersonId: s.toPersonId,
+      amount: s.amount,
+      personId: identity!.personId,
+    });
+    await mutate("/api/settlements");
+  }
 
   return (
     <div className="mt-3 px-5">
@@ -33,19 +53,31 @@ export function MySettlement({ expenses }: { expenses: Expense[] }) {
               return (
                 <div
                   key={`${s.fromPersonId}-${s.toPersonId}`}
-                  className="flex items-center justify-between"
+                  className="flex items-center justify-between gap-2"
                 >
-                  <span className="inline-flex items-center gap-1.5 text-sm font-medium text-ink">
-                    <span className={`h-2 w-2 rounded-full ${c.dot}`} />
-                    {iOwe ? `要給 ${other.name}` : `${other.name} 要給我`}
+                  <span className="inline-flex min-w-0 items-center gap-1.5 text-sm font-medium text-ink">
+                    <span className={`h-2 w-2 shrink-0 rounded-full ${c.dot}`} />
+                    <span className="truncate">
+                      {iOwe ? `要給 ${other.name}` : `${other.name} 要給我`}
+                    </span>
                   </span>
-                  <span
-                    className={`font-mono text-sm font-semibold ${
-                      iOwe ? "text-red-500" : "text-emerald-600"
-                    }`}
-                  >
-                    NT$ {s.amount.toLocaleString()}
-                  </span>
+                  <div className="flex shrink-0 items-center gap-2">
+                    <span
+                      className={`font-mono text-sm font-semibold ${
+                        iOwe ? "text-red-500" : "text-emerald-600"
+                      }`}
+                    >
+                      NT$ {s.amount.toLocaleString()}
+                    </span>
+                    <button
+                      onClick={() => markSettled(s)}
+                      aria-label="標記已還款"
+                      title="標記已還款"
+                      className="tap-scale flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-paper-line text-transparent hover:border-emerald-400 hover:text-emerald-400"
+                    >
+                      <Check size={12} />
+                    </button>
+                  </div>
                 </div>
               );
             })}

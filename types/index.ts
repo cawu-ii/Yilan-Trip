@@ -41,6 +41,15 @@ export interface Expense {
   participants: ExpenseParticipant[];
 }
 
+export interface SettlementPayment {
+  id: number;
+  fromPersonId: number;
+  toPersonId: number;
+  amount: number;
+  createdBy: number;
+  createdAt: string;
+}
+
 export interface PersonBalance {
   personId: number;
   name: string;

@@ -5,6 +5,7 @@ export const TRIP_CHANNEL = "trip-ylrd";
 export type BroadcastEvent =
   | "itinerary-update"
   | "expense-update"
+  | "settlement-update"
   | "food-update";
 
 let pusherClient: Pusher | null | undefined;

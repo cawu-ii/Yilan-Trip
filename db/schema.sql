@@ -45,6 +45,19 @@ CREATE TABLE IF NOT EXISTS expense_participants (
 CREATE INDEX IF NOT EXISTS idx_participants_expense ON expense_participants(expense_id);
 CREATE INDEX IF NOT EXISTS idx_participants_person  ON expense_participants(person_id);
 
+-- Records an actual repayment between two people (e.g. a bank transfer to
+-- settle up). Nets against the pairwise debt computed from expenses so
+-- "我的結算" reflects money that's already changed hands.
+CREATE TABLE IF NOT EXISTS settlement_payments (
+  id              INTEGER PRIMARY KEY AUTOINCREMENT,
+  from_person_id  INTEGER NOT NULL REFERENCES people(id),
+  to_person_id    INTEGER NOT NULL REFERENCES people(id),
+  amount          INTEGER NOT NULL CHECK (amount > 0),
+  created_by      INTEGER NOT NULL REFERENCES people(id),
+  created_at      TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_settlement_payments_pair ON settlement_payments(from_person_id, to_person_id);
+
 CREATE TABLE IF NOT EXISTS food_items (
   id          INTEGER PRIMARY KEY AUTOINCREMENT,
   category    TEXT NOT NULL CHECK (category IN ('night_market','restaurant','souvenir')),

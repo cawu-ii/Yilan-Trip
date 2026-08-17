@@ -23,15 +23,18 @@ export function RealtimeListener() {
       mutate("/api/expenses");
       mutate("/api/expenses/summary");
     };
+    const onSettlement = () => mutate("/api/settlements");
     const onFood = () => mutate("/api/food");
 
     channel.bind("itinerary-update", onItinerary);
     channel.bind("expense-update", onExpense);
+    channel.bind("settlement-update", onSettlement);
     channel.bind("food-update", onFood);
 
     return () => {
       channel.unbind("itinerary-update", onItinerary);
       channel.unbind("expense-update", onExpense);
+      channel.unbind("settlement-update", onSettlement);
       channel.unbind("food-update", onFood);
       client.unsubscribe(TRIP_CHANNEL);
     };

@@ -7,6 +7,7 @@ import type {
   FoodItem,
   ItineraryItem,
   Person,
+  SettlementPayment,
 } from "@/types";
 
 export function mapPerson(row: Row): Person {
@@ -56,6 +57,17 @@ export function mapExpenseParticipant(row: Row): ExpenseParticipant {
   return {
     personId: Number(row.person_id),
     shareAmount: Number(row.share_amount),
+  };
+}
+
+export function mapSettlementPayment(row: Row): SettlementPayment {
+  return {
+    id: Number(row.id),
+    fromPersonId: Number(row.from_person_id),
+    toPersonId: Number(row.to_person_id),
+    amount: Number(row.amount),
+    createdBy: Number(row.created_by),
+    createdAt: String(row.created_at),
   };
 }
 

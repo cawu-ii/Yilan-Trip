@@ -68,6 +68,18 @@ export const expenseCreateSchema = z
 
 export const expenseUpdateSchema = expenseCreateSchema;
 
+export const settlementPaymentCreateSchema = z
+  .object({
+    fromPersonId: personIdSchema,
+    toPersonId: personIdSchema,
+    amount: z.number().int().positive("金額需大於 0"),
+    personId: personIdSchema,
+  })
+  .refine((data) => data.fromPersonId !== data.toPersonId, {
+    message: "付款人和收款人不能相同",
+    path: ["toPersonId"],
+  });
+
 export const foodCategoryEnum = z.enum(["night_market", "restaurant", "souvenir"]);
 
 export const foodItemCreateSchema = z.object({
